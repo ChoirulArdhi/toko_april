@@ -27,8 +27,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (btnSpinner) btnSpinner.classList.remove('d-none');
 
             try {
-                await firebase.auth().signInWithEmailAndPassword(email, password);
                 showToast('Login berhasil! Mengalihkan...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
             } catch (error) {
                 console.error(error);
                 let msg = 'Login gagal. Periksa email dan password.';

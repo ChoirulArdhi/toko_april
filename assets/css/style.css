@@ -151,6 +151,24 @@ a {
 }
 
 /* Sidebar Collapsed State (Desktop) */
+@media (max-width: 768px) {
+    #product-grid {
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+
+    .col-md-5.col-lg-4.bg-white.border-start {
+        height: auto !important;
+        margin-bottom: 120px;
+        /* Extra space for bottom nav */
+    }
+
+    #cart-items {
+        max-height: 300px;
+        min-height: 200px;
+    }
+}
+
 @media (min-width: 769px) {
     #sidebar.collapsed {
         min-width: 80px;
@@ -546,12 +564,12 @@ a {
 
     #content {
         padding: 1rem;
-        padding-bottom: 100px;
+        padding-bottom: 120px;
+        /* Prevent overlap with bottom nav */
     }
 
     .navbar-mobile {
-        display: none !important;
-        /* Remove hamburger on mobile per user request */
+        display: flex;
     }
 
     .bottom-nav {

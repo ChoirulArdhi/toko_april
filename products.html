@@ -164,9 +164,17 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-muted">URL GAMBAR (OPSIONAL)</label>
-                            <input type="url" class="form-control" id="product-image"
-                                placeholder="https://example.com/item.jpg">
+                            <label class="form-label fw-bold small text-muted">GAMBAR PRODUK (UPLOAD)</label>
+                            <input type="file" class="form-control" id="product-image-file" accept="image/*">
+                            <input type="hidden" id="product-image-url">
+                            <div id="upload-progress-container" class="mt-2 d-none">
+                                <div class="progress" style="height: 5px;">
+                                    <div id="upload-progress-bar"
+                                        class="progress-bar progress-bar-striped progress-bar-animated"
+                                        role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small class="text-muted mt-1 d-block" id="upload-status">Mengunggah...</small>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -200,6 +208,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
     <script src="assets/js/firebase-config.js"></script>
     <script src="assets/js/utils.js"></script>

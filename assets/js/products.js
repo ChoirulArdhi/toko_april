@@ -17,7 +17,54 @@ document.addEventListener('DOMContentLoaded', function () {
         const keyword = e.target.value.toLowerCase();
         loadProducts(keyword);
     });
+
+    // File Upload Handler
+    const fileInput = document.getElementById('product-image-file');
+    if (fileInput) {
+        fileInput.addEventListener('change', handleFileUpload);
+    }
 });
+
+async function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        showToast('File harus berupa gambar!', 'error');
+        return;
+    }
+
+    const progressContainer = document.getElementById('upload-progress-container');
+    const progressBar = document.getElementById('upload-progress-bar');
+    const statusText = document.getElementById('upload-status');
+    const urlInput = document.getElementById('product-image-url');
+
+    progressContainer.classList.remove('d-none');
+    statusText.textContent = 'Mengunggah...';
+
+    const storageRef = firebase.storage().ref(`products/${Date.now()}_${file.name}`);
+    const uploadTask = storageRef.put(file);
+
+    uploadTask.on('state_changed',
+        (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            progressBar.style.width = progress + '%';
+        },
+        (error) => {
+            console.error("Upload Error:", error);
+            showToast('Gagal mengunggah gambar: ' + error.message, 'error');
+            progressContainer.classList.add('d-none');
+        },
+        async () => {
+            const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+            urlInput.value = downloadURL;
+            statusText.textContent = 'Berhasil diunggah!';
+            showToast('Gambar berhasil diunggah');
+            setTimeout(() => progressContainer.classList.add('d-none'), 2000);
+        }
+    );
+}
 
 function loadProducts(keyword = '') {
     if (unsubscribeProducts) unsubscribeProducts();
@@ -109,7 +156,7 @@ async function saveProduct() {
     const purchase_price = Number(document.getElementById('purchase-price').value);
     const selling_price = Number(document.getElementById('selling-price').value);
     const stock = Number(document.getElementById('stock').value);
-    const image_url = document.getElementById('product-image').value;
+    const image_url = document.getElementById('product-image-url').value;
 
     if (!name || !category || isNaN(purchase_price) || isNaN(selling_price) || isNaN(stock)) {
         showToast('Lengkapi semua data dengan benar!', 'error');
@@ -141,6 +188,7 @@ async function saveProduct() {
         }
 
         productModal.hide();
+        resetForm(); // Reset form after save
     } catch (error) {
         console.error("Error saving product:", error);
         showToast('Gagal menyimpan produk: ' + error.message, 'error');
@@ -161,7 +209,7 @@ async function editProduct(id) {
         document.getElementById('purchase-price').value = data.purchase_price;
         document.getElementById('selling-price').value = data.selling_price;
         document.getElementById('stock').value = data.stock;
-        document.getElementById('product-image').value = data.image_url || '';
+        document.getElementById('product-image-url').value = data.image_url || '';
 
         document.getElementById('productModalLabel').textContent = 'Edit Produk';
         productModal.show();
@@ -186,6 +234,8 @@ async function deleteProduct(id) {
 window.resetForm = function () {
     document.getElementById('product-form').reset();
     document.getElementById('product-id').value = '';
-    document.getElementById('product-image').value = '';
+    document.getElementById('product-image-url').value = '';
+    document.getElementById('product-image-file').value = '';
+    document.getElementById('upload-progress-container').classList.add('d-none');
     document.getElementById('productModalLabel').textContent = 'Tambah Produk';
 }
