@@ -179,7 +179,13 @@
                                     </button>
                                 </div>
                             </div>
-                            <input type="file" class="form-control" id="product-image-file" accept="image/*">
+                            <input type="file" class="form-control mb-2" id="product-image-file" accept="image/*">
+                            <div id="manual-url-hint" class="d-none mb-2">
+                                <label class="form-label small text-danger"><i class="fas fa-exclamation-circle"></i>
+                                    Upload gagal? Masukkan link gambar manual:</label>
+                                <input type="text" class="form-control form-control-sm" id="product-image-url"
+                                    placeholder="https://i.ibb.co/...">
+                            </div>
                             <input type="hidden" id="product-image-url">
                             <div id="upload-progress-container" class="mt-2 d-none">
                                 <div class="progress" style="height: 5px;">

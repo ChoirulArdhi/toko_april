@@ -44,7 +44,7 @@ async function handleFileUpload(e) {
     statusText.textContent = 'Mengunggah ke ImgBB...';
 
     // ImgBB API Key (Free)
-    const IMGBB_API_KEY = '52d5867664658e461f044bb77747e704'; // Fresh key
+    const IMGBB_API_KEY = '7063c473188d8b889370773e3467c631'; // Revert to previous working key
 
     const formData = new FormData();
     formData.append('image', file);
@@ -54,11 +54,6 @@ async function handleFileUpload(e) {
             method: 'POST',
             body: formData
         });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error ? errorData.error.message : `HTTP error! status: ${response.status}`);
-        }
 
         const result = await response.json();
 
@@ -70,13 +65,15 @@ async function handleFileUpload(e) {
             showToast('Gambar berhasil diunggah');
             setTimeout(() => progressContainer.classList.add('d-none'), 2000);
         } else {
-            throw new Error(result.error ? result.error.message : 'Upload gagal');
+            console.error("ImgBB Error Response:", result);
+            throw new Error(result.error ? result.error.message : 'Invalid API Key atau format file');
         }
     } catch (error) {
-        console.error("Upload Error Details:", error);
-        showToast('Gagal mengunggah: ' + error.message, 'error');
+        console.error("Upload Catch Error:", error);
+        showToast('Gagal: ' + error.message + '. Anda bisa masukkan link gambar manual di bawah.', 'error');
         statusText.textContent = 'Gagal: ' + error.message;
-        setTimeout(() => progressContainer.classList.add('d-none'), 5000);
+        // Show the manual input if upload fails
+        document.getElementById('manual-url-hint').classList.remove('d-none');
     }
 }
 
