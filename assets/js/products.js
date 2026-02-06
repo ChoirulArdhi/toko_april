@@ -41,29 +41,37 @@ async function handleFileUpload(e) {
     const urlInput = document.getElementById('product-image-url');
 
     progressContainer.classList.remove('d-none');
-    statusText.textContent = 'Mengunggah...';
+    statusText.textContent = 'Mengunggah ke ImgBB...';
 
-    const storageRef = firebase.storage().ref(`products/${Date.now()}_${file.name}`);
-    const uploadTask = storageRef.put(file);
+    // ImgBB API Key (Free)
+    // IMPORTANT: It is better to use your own key from https://api.imgbb.com/
+    const IMGBB_API_KEY = '7063c473188d8b889370773e3467c631';
 
-    uploadTask.on('state_changed',
-        (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            progressBar.style.width = progress + '%';
-        },
-        (error) => {
-            console.error("Upload Error:", error);
-            showToast('Gagal mengunggah gambar: ' + error.message, 'error');
-            progressContainer.classList.add('d-none');
-        },
-        async () => {
-            const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-            urlInput.value = downloadURL;
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            urlInput.value = result.data.url;
+            progressBar.style.width = '100%';
             statusText.textContent = 'Berhasil diunggah!';
             showToast('Gambar berhasil diunggah');
             setTimeout(() => progressContainer.classList.add('d-none'), 2000);
+        } else {
+            throw new Error(result.error.message || 'Upload gagal');
         }
-    );
+    } catch (error) {
+        console.error("Upload Error:", error);
+        showToast('Gagal mengunggah gambar ke ImgBB: ' + error.message, 'error');
+        progressContainer.classList.add('d-none');
+    }
 }
 
 function loadProducts(keyword = '') {

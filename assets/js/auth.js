@@ -27,17 +27,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (btnSpinner) btnSpinner.classList.remove('d-none');
 
             try {
+                await firebase.auth().signInWithEmailAndPassword(email, password);
                 showToast('Login berhasil! Mengalihkan...', 'success');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
+                // Redirect will be handled by the onAuthStateChanged listener
             } catch (error) {
                 console.error(error);
                 let msg = 'Login gagal. Periksa email dan password.';
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
                     msg = 'Email atau password salah.';
                 } else if (error.code === 'auth/invalid-email') {
                     msg = 'Format email tidak valid.';
+                } else if (error.code === 'auth/network-request-failed') {
+                    msg = 'Koneksi internet bermasalah.';
                 }
                 showToast(msg, 'error');
 

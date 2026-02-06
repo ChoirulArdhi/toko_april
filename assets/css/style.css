@@ -564,8 +564,7 @@ a {
 
     #content {
         padding: 1rem;
-        padding-bottom: 120px;
-        /* Prevent overlap with bottom nav */
+        padding-bottom: 150px;
     }
 
     .navbar-mobile {
