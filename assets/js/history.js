@@ -41,20 +41,27 @@ function loadHistory(startDate) {
     // Unsubscribe previous listener if exists
     if (historyUnsubscribe) historyUnsubscribe();
 
-    const endDate = new Date(startDate);
-    endDate.setHours(23, 59, 59, 999);
+    // Create start and end of day in local time
+    const startOfDay = new Date(startDate);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(startDate);
+    endOfDay.setHours(23, 59, 59, 999);
 
     const tbody = document.getElementById('history-table-body');
     if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="text-center p-5"><div class="spinner-border text-primary"></div></td></tr>';
 
     historyUnsubscribe = db.collection('transactions')
-        .where('date', '>=', startDate)
-        .where('date', '<=', endDate)
+        .where('date', '>=', startOfDay)
+        .where('date', '<=', endOfDay)
         .orderBy('date', 'desc')
         .onSnapshot(snapshot => {
             renderHistoryTable(snapshot);
         }, error => {
             console.error("History Error:", error);
+            if (error.code === 'failed-precondition') {
+                showToast('Database indexing sedang diproses...', 'error');
+            }
             if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">Gagal memuat data.</td></tr>';
         });
 }

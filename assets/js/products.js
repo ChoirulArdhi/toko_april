@@ -60,6 +60,7 @@ async function handleFileUpload(e) {
 
         if (result.success) {
             urlInput.value = result.data.url;
+            if (window.showImagePreview) showImagePreview(result.data.url);
             progressBar.style.width = '100%';
             statusText.textContent = 'Berhasil diunggah!';
             showToast('Gambar berhasil diunggah');
@@ -218,6 +219,11 @@ async function editProduct(id) {
         document.getElementById('selling-price').value = data.selling_price;
         document.getElementById('stock').value = data.stock;
         document.getElementById('product-image-url').value = data.image_url || '';
+        if (data.image_url) {
+            showImagePreview(data.image_url);
+        } else {
+            document.getElementById('image-preview-container').classList.add('d-none');
+        }
 
         document.getElementById('productModalLabel').textContent = 'Edit Produk';
         productModal.show();
@@ -244,6 +250,22 @@ window.resetForm = function () {
     document.getElementById('product-id').value = '';
     document.getElementById('product-image-url').value = '';
     document.getElementById('product-image-file').value = '';
+    document.getElementById('image-preview-container').classList.add('d-none');
+    document.getElementById('image-preview').src = '';
     document.getElementById('upload-progress-container').classList.add('d-none');
     document.getElementById('productModalLabel').textContent = 'Tambah Produk';
+}
+
+window.showImagePreview = function (url) {
+    const container = document.getElementById('image-preview-container');
+    const img = document.getElementById('image-preview');
+    img.src = url;
+    container.classList.remove('d-none');
+}
+
+window.removeImage = function () {
+    document.getElementById('product-image-url').value = '';
+    document.getElementById('product-image-file').value = '';
+    document.getElementById('image-preview-container').classList.add('d-none');
+    document.getElementById('image-preview').src = '';
 }

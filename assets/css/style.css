@@ -417,8 +417,7 @@ a {
     -webkit-backdrop-filter: blur(15px);
     border-top: 1px solid var(--glass-border);
     padding: 8px 5px 25px;
-    /* Adjusted padding */
-    z-index: 2000;
+    z-index: 1030;
     box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
     display: flex;
     justify-content: space-around;

@@ -168,7 +168,17 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-muted">GAMBAR PRODUK (UPLOAD)</label>
+                            <label class="form-label fw-bold small text-muted">GAMBAR PRODUK</label>
+                            <div id="image-preview-container" class="mb-2 d-none">
+                                <div class="position-relative d-inline-block">
+                                    <img id="image-preview" src="" class="img-thumbnail" style="max-height: 150px;">
+                                    <button type="button"
+                                        class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle"
+                                        onclick="removeImage()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
                             <input type="file" class="form-control" id="product-image-file" accept="image/*">
                             <input type="hidden" id="product-image-url">
                             <div id="upload-progress-container" class="mt-2 d-none">
