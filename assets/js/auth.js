@@ -105,15 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Sidebar Collapse Logic (Desktop)
-    const toggleBtn = document.getElementById('hamburger-toggle');
-    const sidebar = document.getElementById('sidebar');
-
-    if (toggleBtn && sidebar) {
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-        });
-    }
+    // Sidebar logic removed
 });
 
 

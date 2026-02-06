@@ -78,124 +78,38 @@ a {
     width: 100%;
 }
 
-/* Sidebar Styling */
-#sidebar {
-    min-width: var(--sidebar-width);
-    max-width: var(--sidebar-width);
-    background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary) 100%);
-    color: var(--white);
-    min-height: 100vh;
-    position: sticky;
-    top: 0;
-    transition: var(--transition);
-    z-index: 1000;
-    box-shadow: var(--shadow-lg);
-}
-
-#sidebar .sidebar-header {
-    padding: 30px 25px;
-    text-align: center;
-}
-
-#sidebar .sidebar-header h3 {
-    font-size: 1.5rem;
+/* Wrapper & Content Area */
+.wrapper {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    width: 100%;
 }
 
-#sidebar ul.components {
-    padding: 20px 15px;
-}
-
-#sidebar ul li {
-    margin-bottom: 8px;
-}
-
-#sidebar ul li a {
-    padding: 12px 20px;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: rgba(255, 255, 255, 0.75);
-    text-decoration: none;
-    border-radius: 12px;
-}
-
-#sidebar ul li a i {
-    width: 20px;
-    text-align: center;
-    font-size: 1.1rem;
-}
-
-#sidebar ul li a:hover {
-    color: var(--white);
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateX(5px);
-}
-
-#sidebar ul li.active>a {
-    color: var(--white);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-    font-weight: 600;
-}
-
-/* Content Area */
 #content {
     width: 100%;
     padding: 2rem;
+    min-height: 100vh;
     transition: var(--transition);
+    background-color: var(--secondary);
+    position: relative;
+    padding-bottom: 120px;
+    /* Space for Bottom Nav */
 }
 
-/* Sidebar Collapsed State (Desktop) */
+/* POS Responsive */
 @media (max-width: 768px) {
     #product-grid {
-        max-height: 50vh;
-        overflow-y: auto;
+        max-height: none;
+        overflow-y: visible;
     }
 
     .col-md-5.col-lg-4.bg-white.border-start {
         height: auto !important;
         margin-bottom: 120px;
-        /* Extra space for bottom nav */
     }
 
     #cart-items {
-        max-height: 300px;
+        max-height: 400px;
         min-height: 200px;
-    }
-}
-
-@media (min-width: 769px) {
-    #sidebar.collapsed {
-        min-width: 80px;
-        max-width: 80px;
-    }
-
-    #sidebar.collapsed .sidebar-header h3 span,
-    #sidebar.collapsed ul li a span {
-        display: none;
-    }
-
-    #sidebar.collapsed .sidebar-header h3 {
-        padding: 0;
-    }
-
-    #sidebar.collapsed ul li a {
-        justify-content: center;
-        padding: 15px;
-    }
-
-    #sidebar.collapsed ul li a i {
-        margin: 0;
-        font-size: 1.3rem;
-    }
-
-    #sidebar.collapsed .border-top {
-        display: none;
     }
 }
 
@@ -354,20 +268,20 @@ a {
     max-height: 50vh;
 }
 
-/* Mobile Bottom Nav */
+/* Bottom Navbar (Standardized) */
 .bottom-nav {
     display: none;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: var(--glass);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-top: 1px solid var(--glass-border);
-    padding: 10px 10px 25px;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
     z-index: 2000;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+    border-top: 1px solid #eee;
 }
 
 .nav-item-mobile {
@@ -406,23 +320,6 @@ a {
     border-radius: 0 0 5px 5px;
 }
 
-.bottom-nav {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--glass);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-top: 1px solid var(--glass-border);
-    padding: 8px 5px 25px;
-    z-index: 1030;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
-    display: flex;
-    justify-content: space-around;
-}
-
 /* Auth Page specific */
 .bg-auth {
     background: linear-gradient(135deg, #f0f2f5 0%, #e0e6ed 100%);
@@ -454,43 +351,6 @@ a {
     font-size: 1.8rem;
     color: var(--primary-dark);
     margin-bottom: 0.5rem;
-}
-
-/* Hamburger Menu styles */
-.navbar-mobile {
-    display: none;
-    background: var(--white);
-    padding: 15px 20px;
-    box-shadow: var(--shadow-sm);
-    position: sticky;
-    top: 0;
-    z-index: 1050;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.hamburger-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--primary);
-    cursor: pointer;
-}
-
-.sidebar-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    backdrop-filter: blur(3px);
-}
-
-.sidebar-overlay.active {
-    display: block;
 }
 
 /* Print Receipt Styles */
@@ -579,18 +439,9 @@ a {
 
 /* Responsive */
 @media (max-width: 768px) {
-    #sidebar {
-        display: none !important;
-        /* Remove sidebar on mobile per user request */
-    }
-
     #content {
         padding: 1rem;
         padding-bottom: 150px;
-    }
-
-    .navbar-mobile {
-        display: flex;
     }
 
     .bottom-nav {
@@ -603,29 +454,29 @@ a {
     }
 }
 
-/* Fix for menu covering forms: Hide bottom-nav when modal is open */
-body.modal-open .bottom-nav {
-    display: none !important;
-}
-
-/* POS Mobile Stabilization */
+/* POS Mobile Stabilization - Vertical Stack */
 @media (max-width: 768px) {
-    #content {
-        height: auto !important;
-        overflow: visible !important;
-    }
-
     .checkout-sidebar {
-        height: auto !important;
+        position: relative !important;
+        width: 100% !important;
         max-height: none !important;
-        border-top: 2px solid var(--primary);
         margin-top: 2rem;
-        padding-bottom: 100px;
-        /* Space for bottom nav */
+        border-radius: 0;
+        border-top: 2px solid var(--primary);
     }
 
     #product-grid {
         max-height: none !important;
         overflow: visible !important;
     }
+
+    .container-fluid {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+}
+
+/* Fix for menu covering forms: Hide bottom-nav when modal is open */
+body.modal-open .bottom-nav {
+    display: none !important;
 }

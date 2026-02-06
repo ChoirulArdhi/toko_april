@@ -16,50 +16,17 @@
 </head>
 
 <body>
-    <!-- Mobile Navbar -->
-    <div class="navbar-mobile">
-        <button class="hamburger-btn" id="hamburger-toggle">
-            <i class="fas fa-bars"></i>
-        </button>
-        <span class="fw-bold"><i class="fas fa-store"></i> Toko April</span>
-        <div style="width: 24px;"></div> <!-- Spacer -->
-    </div>
+    <!-- Removed Mobile Navbar -->
 
-    <!-- Sidebar Overlay -->
-    <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
+    <!-- Removed Sidebar Overlay & Sidebar -->
     <div class="wrapper">
-        <!-- Sidebar -->
-        <nav id="sidebar">
-            <div class="sidebar-header">
-                <h3><i class="fas fa-store text-white"></i> Toko April</h3>
-            </div>
-            <ul class="list-unstyled components">
-                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
-                <li><a href="transactions.html"><i class="fas fa-cash-register"></i> Kasir</a></li>
-                <li class="active"><a href="products.html"><i class="fas fa-box"></i> Produk</a></li>
-                <li><a href="history.html"><i class="fas fa-history"></i> Riwayat</a></li>
-                <li><a href="reports.html"><i class="fas fa-chart-pie"></i> Laporan</a></li>
-            </ul>
-            <ul class="list-unstyled mt-4 border-top pt-4 px-3">
-                <li>
-                    <a href="#" id="logout-btn" class="text-danger"><i class="fas fa-sign-out-alt"></i> Keluar</a>
-                </li>
-            </ul>
-        </nav>
 
         <!-- Page Content -->
         <div id="content">
             <div class="container-fluid pt-4">
                 <div class="row mb-4 animate-up" style="animation-delay: 0.1s;">
                     <div class="col-12 d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center">
-                            <button id="hamburger-toggle" class="btn btn-light shadow-sm me-3 border d-none d-md-block"
-                                style="border-radius: 12px; height: 45px; width: 45px;">
-                                <i class="fas fa-bars"></i>
-                            </button>
-                            <h2 class="mb-0 fw-bold">Manajemen Produk</h2>
-                        </div>
+                        <h2 class="mb-0 fw-bold">Manajemen Produk</h2>
                         <button class="btn btn-primary-custom shadow" onclick="resetForm()" data-bs-toggle="modal"
                             data-bs-target="#productModal">
                             <i class="fas fa-plus me-2"></i> Tambah Produk
@@ -168,7 +135,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-muted">GAMBAR PRODUK</label>
+                            <label class="form-label fw-bold small text-muted">LINK GAMBAR PRODUK (OPTIONAL)</label>
                             <div id="image-preview-container" class="mb-2 d-none">
                                 <div class="position-relative d-inline-block">
                                     <img id="image-preview" src="" class="img-thumbnail" style="max-height: 150px;">
@@ -179,22 +146,9 @@
                                     </button>
                                 </div>
                             </div>
-                            <input type="file" class="form-control mb-2" id="product-image-file" accept="image/*">
-                            <div id="manual-url-hint" class="d-none mb-2">
-                                <label class="form-label small text-danger"><i class="fas fa-exclamation-circle"></i>
-                                    Upload gagal? Masukkan link gambar manual:</label>
-                                <input type="text" class="form-control form-control-sm" id="product-image-url"
-                                    placeholder="https://i.ibb.co/...">
-                            </div>
-                            <input type="hidden" id="product-image-url">
-                            <div id="upload-progress-container" class="mt-2 d-none">
-                                <div class="progress" style="height: 5px;">
-                                    <div id="upload-progress-bar"
-                                        class="progress-bar progress-bar-striped progress-bar-animated"
-                                        role="progressbar" style="width: 0%"></div>
-                                </div>
-                                <small class="text-muted mt-1 d-block" id="upload-status">Mengunggah...</small>
-                            </div>
+                            <input type="text" class="form-control" id="product-image-url"
+                                placeholder="https://contoh-link-gambar.com/foto.jpg">
+                            <small class="text-muted mt-1 d-block">Kosongkan jika tidak ada foto.</small>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">

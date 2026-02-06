@@ -20,62 +20,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // File Upload Handler
     const fileInput = document.getElementById('product-image-file');
-    if (fileInput) {
-        fileInput.addEventListener('change', handleFileUpload);
-    }
+    // Removed ImgBB listener
 });
 
-async function handleFileUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-        showToast('File harus berupa gambar!', 'error');
-        return;
+// Update preview when manual URL is entered
+document.getElementById('product-image-url').addEventListener('input', function (e) {
+    const url = e.target.value;
+    if (url) {
+        showImagePreview(url);
+    } else {
+        document.getElementById('image-preview-container').classList.add('d-none');
     }
-
-    const progressContainer = document.getElementById('upload-progress-container');
-    const progressBar = document.getElementById('upload-progress-bar');
-    const statusText = document.getElementById('upload-status');
-    const urlInput = document.getElementById('product-image-url');
-
-    progressContainer.classList.remove('d-none');
-    statusText.textContent = 'Mengunggah ke ImgBB...';
-
-    // ImgBB API Key (Free)
-    const IMGBB_API_KEY = '7063c473188d8b889370773e3467c631'; // Revert to previous working key
-
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-            method: 'POST',
-            body: formData
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            urlInput.value = result.data.url;
-            if (window.showImagePreview) showImagePreview(result.data.url);
-            progressBar.style.width = '100%';
-            statusText.textContent = 'Berhasil diunggah!';
-            showToast('Gambar berhasil diunggah');
-            setTimeout(() => progressContainer.classList.add('d-none'), 2000);
-        } else {
-            console.error("ImgBB Error Response:", result);
-            throw new Error(result.error ? result.error.message : 'Invalid API Key atau format file');
-        }
-    } catch (error) {
-        console.error("Upload Catch Error:", error);
-        showToast('Gagal: ' + error.message + '. Anda bisa masukkan link gambar manual di bawah.', 'error');
-        statusText.textContent = 'Gagal: ' + error.message;
-        // Show the manual input if upload fails
-        document.getElementById('manual-url-hint').classList.remove('d-none');
-    }
-}
+});
 
 function loadProducts(keyword = '') {
     if (unsubscribeProducts) unsubscribeProducts();
