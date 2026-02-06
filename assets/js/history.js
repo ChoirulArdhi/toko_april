@@ -31,8 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnPrint = document.getElementById('btn-print-history');
     if (btnPrint) {
         btnPrint.addEventListener('click', () => {
-            const orderId = document.getElementById('detail-id').textContent;
-            window.location.href = 'receipt.html?id=' + orderId.replace('#', '').toLowerCase();
+            const orderId = btnPrint.getAttribute('data-transaction-id');
+            if (orderId) {
+                window.location.href = 'receipt.html?id=' + orderId;
+            } else {
+                showToast('ID Transaksi tidak ditemukan', 'error');
+            }
         });
     }
 });
@@ -89,6 +93,7 @@ function renderHistoryTable(snapshot) {
                     <button class="btn btn-sm btn-light rounded-pill px-3 shadow-sm border" onclick="showDetail('${doc.id}')">
                         <i class="fas fa-eye me-1"></i> Detail
                     </button>
+                    <input type="hidden" id="full-id-${doc.id}" value="${doc.id}">
                 </td>
             </tr>
         `;
@@ -109,6 +114,7 @@ async function showDetail(transactionId) {
         document.getElementById('detail-id').textContent = '#' + transactionId.substring(0, 8).toUpperCase();
         document.getElementById('detail-date').textContent = transData.date ? new Date(transData.date.seconds * 1000).toLocaleString('id-ID') : '-';
         document.getElementById('detail-total').textContent = formatRupiah(transData.total_price);
+        document.getElementById('btn-print-history').setAttribute('data-transaction-id', transactionId);
 
         const itemsSnapshot = await db.collection('transaction_items').where('transaction_id', '==', transactionId).get();
         const itemsBody = document.getElementById('detail-items');

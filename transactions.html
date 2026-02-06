@@ -52,8 +52,10 @@
             <div class="container-fluid h-100 p-0">
                 <div class="row g-0 h-100">
                     <!-- Product Selection Area -->
-                    <div class="col-md-7 col-lg-8 p-4 animate-up" style="height: 100vh; overflow-y: auto;">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="col-md-7 col-lg-8 p-3 p-md-4 animate-up"
+                        style="height: 100vh; overflow-y: auto; padding-bottom: 100px !important;">
+                        <div
+                            class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
                             <div class="d-flex align-items-center">
                                 <button id="hamburger-toggle"
                                     class="btn btn-light shadow-sm me-3 border d-none d-md-block"
@@ -62,15 +64,15 @@
                                 </button>
                                 <h2 class="mb-0 fw-bold">Kasir</h2>
                             </div>
-                            <div class="search-box position-relative" style="width: 300px;">
+                            <div class="search-box position-relative w-100" style="max-width: 400px;">
                                 <i
                                     class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                                <input type="text" class="form-control ps-5 shadow-sm" id="search-pos"
+                                <input type="text" class="form-control ps-5 shadow-sm py-2" id="search-pos"
                                     placeholder="Cari produk...">
                             </div>
                         </div>
 
-                        <div class="row g-3" id="product-grid">
+                        <div class="row g-2 g-md-3" id="product-grid">
                             <!-- Products injected via JS -->
                             <div class="col-12 text-center pt-5">
                                 <div class="spinner-border text-primary" role="status"></div>
@@ -79,11 +81,11 @@
                     </div>
 
                     <!-- Cart/Checkout Area -->
-                    <div class="col-md-5 col-lg-4 bg-white border-start shadow-lg d-flex flex-column animate-up"
+                    <div class="col-md-5 col-lg-4 bg-white border-start shadow-lg d-flex flex-column animate-up checkout-sidebar"
                         style="height: 100vh; animation-delay: 0.2s;">
-                        <div class="p-4 bg-primary text-white d-flex justify-content-between align-items-center">
+                        <div class="p-3 p-md-4 bg-primary text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 fw-bold"><i class="fas fa-shopping-basket me-2"></i> Keranjang</h5>
-                            <button class="btn btn-sm btn-light text-danger fw-bold shadow-sm"
+                            <button class="btn btn-sm btn-light text-danger fw-bold shadow-sm px-3"
                                 onclick="clearCart()">Reset</button>
                         </div>
 

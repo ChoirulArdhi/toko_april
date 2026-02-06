@@ -602,3 +602,25 @@ a {
         padding: 1.5rem !important;
     }
 }
+/* Fix for menu covering forms: Hide bottom-nav when modal is open */
+body.modal-open .bottom-nav {
+    display: none !important;
+}
+
+/* POS Responsive Improvements */
+@media (max-width: 768px) {
+    .checkout-sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: auto !important;
+        max-height: 50vh;
+        z-index: 1000;
+        border-top: 2px solid var(--primary);
+    }
+    
+    #cart-items {
+        max-height: 200px;
+    }
+}

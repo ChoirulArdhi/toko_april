@@ -44,8 +44,7 @@ async function handleFileUpload(e) {
     statusText.textContent = 'Mengunggah ke ImgBB...';
 
     // ImgBB API Key (Free)
-    // IMPORTANT: It is better to use your own key from https://api.imgbb.com/
-    const IMGBB_API_KEY = '7063c473188d8b889370773e3467c631';
+    const IMGBB_API_KEY = '52d5867664658e461f044bb77747e704'; // Fresh key
 
     const formData = new FormData();
     formData.append('image', file);
@@ -55,6 +54,11 @@ async function handleFileUpload(e) {
             method: 'POST',
             body: formData
         });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error ? errorData.error.message : `HTTP error! status: ${response.status}`);
+        }
 
         const result = await response.json();
 
@@ -66,12 +70,13 @@ async function handleFileUpload(e) {
             showToast('Gambar berhasil diunggah');
             setTimeout(() => progressContainer.classList.add('d-none'), 2000);
         } else {
-            throw new Error(result.error.message || 'Upload gagal');
+            throw new Error(result.error ? result.error.message : 'Upload gagal');
         }
     } catch (error) {
-        console.error("Upload Error:", error);
-        showToast('Gagal mengunggah gambar ke ImgBB: ' + error.message, 'error');
-        progressContainer.classList.add('d-none');
+        console.error("Upload Error Details:", error);
+        showToast('Gagal mengunggah: ' + error.message, 'error');
+        statusText.textContent = 'Gagal: ' + error.message;
+        setTimeout(() => progressContainer.classList.add('d-none'), 5000);
     }
 }
 
