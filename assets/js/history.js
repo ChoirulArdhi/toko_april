@@ -32,24 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btnPrint) {
         btnPrint.addEventListener('click', () => {
             const orderId = document.getElementById('detail-id').textContent;
-            const totalStr = document.getElementById('detail-total').textContent;
-            const dateStr = document.getElementById('detail-date').textContent;
-
-            // Extract items from table
-            const items = [];
-            const rows = document.querySelectorAll('#detail-items tr');
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                if (cells.length >= 3) {
-                    items.push({
-                        name: cells[0].textContent,
-                        quantity: cells[1].textContent,
-                        subtotal: cells[2].textContent
-                    });
-                }
-            });
-
-            printHistoryReceipt(orderId, totalStr, dateStr, items);
+            window.location.href = 'receipt.html?id=' + orderId.replace('#', '').toLowerCase();
         });
     }
 });

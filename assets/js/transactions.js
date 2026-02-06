@@ -250,8 +250,11 @@ async function processPayment() {
 
         await batch.commit();
 
-        showToast('Transaksi Berhasil! <a href="receipt.html?id=' + transactionRef.id + '" target="_blank" class="text-white text-decoration-underline ms-2">Lihat Struk Digital</a>', 'success');
-        printReceipt(transactionRef.id, total, cash, cart);
+        showToast('Transaksi Berhasil! Mengalihkan ke Struk...', 'success');
+
+        setTimeout(() => {
+            window.location.href = 'receipt.html?id=' + transactionRef.id;
+        }, 1500);
 
 
         cart = [];
