@@ -2,6 +2,9 @@
 
 let productModal;
 let unsubscribeProducts = null;
+let allProducts = [];
+let currentPage = 1;
+const itemsPerPage = 10;
 
 document.addEventListener('DOMContentLoaded', function () {
     productModal = new bootstrap.Modal(document.getElementById('productModal'));
@@ -15,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Search Handler
     document.getElementById('search-product').addEventListener('input', function (e) {
         const keyword = e.target.value.toLowerCase();
-        loadProducts(keyword);
+        currentPage = 1; // Reset to page 1 on search
+        filterAndRenderProducts(keyword);
     });
 
     // File Upload Handler
@@ -33,7 +37,7 @@ document.getElementById('product-image-url').addEventListener('input', function 
     }
 });
 
-function loadProducts(keyword = '') {
+function loadProducts() {
     if (unsubscribeProducts) unsubscribeProducts();
 
     const tbody = document.getElementById('product-table-body');
@@ -43,16 +47,13 @@ function loadProducts(keyword = '') {
 
     unsubscribeProducts = db.collection('products')
         .onSnapshot(snapshot => {
-            let items = [];
+            allProducts = [];
             snapshot.forEach(doc => {
-                const data = doc.data();
-                if (!keyword || data.name.toLowerCase().includes(keyword.toLowerCase())) {
-                    items.push({ id: doc.id, ...data });
-                }
+                allProducts.push({ id: doc.id, ...doc.data() });
             });
 
             // SORTING LOGIC: Low stock (<= 10) comes first, then alphabetically
-            items.sort((a, b) => {
+            allProducts.sort((a, b) => {
                 const aLow = (a.stock <= 10) ? 0 : 1;
                 const bLow = (b.stock <= 10) ? 0 : 1;
 
@@ -60,11 +61,18 @@ function loadProducts(keyword = '') {
                 return a.name.localeCompare(b.name);
             });
 
-            renderProductTable(items);
+            filterAndRenderProducts();
         }, error => {
             console.error("Error loading products:", error);
             tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Gagal memuat data produk.</td></tr>';
         });
+}
+
+function filterAndRenderProducts(keyword = '') {
+    const filtered = allProducts.filter(p =>
+        !keyword || p.name.toLowerCase().includes(keyword.toLowerCase())
+    );
+    renderProductTable(filtered);
 }
 
 function renderProductTable(products) {
@@ -73,18 +81,31 @@ function renderProductTable(products) {
 
     if (products.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">Produk tidak ditemukan.</td></tr>';
+        document.getElementById('pagination-info').textContent = 'Showing 0 of 0 products';
+        document.getElementById('product-pagination').innerHTML = '';
         return;
     }
 
+    // Pagination Logic
+    const totalItems = products.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Ensure current page is within bounds after filtering
+    if (currentPage > totalPages) currentPage = totalPages || 1;
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = products.slice(startIndex, endIndex);
+
     tbody.innerHTML = '';
-    products.forEach((product, index) => {
+    paginatedItems.forEach((product, index) => {
         const isLowStock = product.stock <= 10;
         const row = `
             <tr class="animate-up ${isLowStock ? 'low-stock-row' : ''}" style="animation-delay: ${index * 0.03}s">
                 <td>
                     <div class="d-flex align-items-center">
                         <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; overflow: hidden; border: 1px solid #eee;">
-                            ${product.image_url ? `<img src="${product.image_url}" style="width: 100%; height: 100%; object-fit: cover;">` : `<i class="fas fa-box text-muted"></i>`}
+                            ${product.image_url ? `<img src="${product.image_url}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<i class=\'fas fa-box text-muted\'></i>'">` : `<i class="fas fa-box text-muted"></i>`}
                         </div>
                         <div>
                             <span class="fw-bold text-dark d-block">${product.name}</span>
@@ -114,6 +135,43 @@ function renderProductTable(products) {
         `;
         tbody.insertAdjacentHTML('beforeend', row);
     });
+
+    // Update Pagination UI
+    document.getElementById('pagination-info').textContent = `Showing ${startIndex + 1} to ${Math.min(endIndex, totalItems)} of ${totalItems} products`;
+    renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+    const paginationEl = document.getElementById('product-pagination');
+    paginationEl.innerHTML = '';
+
+    if (totalPages <= 1) return;
+
+    // Previous Button
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})"><i class="fas fa-chevron-left"></i></a>`;
+    paginationEl.appendChild(prevLi);
+
+    // Page Numbers
+    for (let i = 1; i <= totalPages; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        li.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>`;
+        paginationEl.appendChild(li);
+    }
+
+    // Next Button
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})"><i class="fas fa-chevron-right"></i></a>`;
+    paginationEl.appendChild(nextLi);
+}
+
+window.changePage = function (page) {
+    currentPage = page;
+    const keyword = document.getElementById('search-product').value;
+    filterAndRenderProducts(keyword);
 }
 
 async function saveProduct() {
