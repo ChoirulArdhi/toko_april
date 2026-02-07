@@ -32,7 +32,8 @@
 }
 
 body {
-    background-color: #f0f2f5;
+    background: url('https://images.unsplash.com/photo-1557683311-eac922347aa1?q=80&w=2029&auto=format&fit=crop') no-repeat center center fixed;
+    background-size: cover;
     font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
     color: var(--dark);
     line-height: 1.6;
@@ -45,11 +46,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #ccc;
+    background: rgba(67, 97, 238, 0.5);
     border-radius: 10px;
 }
 
@@ -89,10 +90,11 @@ a {
     padding: 2rem;
     min-height: 100vh;
     transition: var(--transition);
-    background-color: #f8fafc;
+    background-color: rgba(248, 250, 252, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     position: relative;
     padding-bottom: 120px;
-    /* Space for Bottom Nav */
 }
 
 /* POS Responsive */
@@ -479,4 +481,36 @@ a {
 /* Fix for menu covering forms: Hide bottom-nav when modal is open */
 body.modal-open .bottom-nav {
     display: none !important;
+}
+
+/* Custom Aesthetic Pagination */
+.pagination {
+    gap: 5px;
+}
+
+.pagination .page-item .page-link {
+    border: none;
+    border-radius: 8px !important;
+    padding: 8px 14px;
+    color: var(--dark);
+    font-weight: 600;
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+}
+
+.pagination .page-item .page-link:hover:not(.active) {
+    background: rgba(67, 97, 238, 0.1);
+    color: var(--primary);
+}
+
+.pagination .page-item.disabled .page-link {
+    background: transparent;
+    opacity: 0.5;
 }

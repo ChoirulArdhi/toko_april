@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
         filterAndRenderProducts(keyword);
     });
 
-    // File Upload Handler
-    const fileInput = document.getElementById('product-image-file');
+    // File Upload Handler (Disabled)
+    // const fileInput = document.getElementById('product-image-file');
     // Removed ImgBB listener
 });
 
@@ -150,7 +150,7 @@ function renderPagination(totalPages) {
     // Previous Button
     const prevLi = document.createElement('li');
     prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-    prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})"><i class="fas fa-chevron-left"></i></a>`;
+    prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)" ${currentPage === 1 ? '' : `onclick="changePage(${currentPage - 1})"`}><i class="fas fa-chevron-left"></i></a>`;
     paginationEl.appendChild(prevLi);
 
     // Page Numbers
@@ -164,7 +164,7 @@ function renderPagination(totalPages) {
     // Next Button
     const nextLi = document.createElement('li');
     nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-    nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})"><i class="fas fa-chevron-right"></i></a>`;
+    nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)" ${currentPage === totalPages ? '' : `onclick="changePage(${currentPage + 1})"`}><i class="fas fa-chevron-right"></i></a>`;
     paginationEl.appendChild(nextLi);
 }
 
@@ -265,7 +265,7 @@ window.resetForm = function () {
     document.getElementById('product-form').reset();
     document.getElementById('product-id').value = '';
     document.getElementById('product-image-url').value = '';
-    document.getElementById('product-image-file').value = '';
+    // document.getElementById('product-image-file').value = '';
     document.getElementById('image-preview-container').classList.add('d-none');
     document.getElementById('image-preview').src = '';
     document.getElementById('upload-progress-container').classList.add('d-none');
@@ -281,7 +281,7 @@ window.showImagePreview = function (url) {
 
 window.removeImage = function () {
     document.getElementById('product-image-url').value = '';
-    document.getElementById('product-image-file').value = '';
+    // document.getElementById('product-image-file').value = '';
     document.getElementById('image-preview-container').classList.add('d-none');
     document.getElementById('image-preview').src = '';
 }
