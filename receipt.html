@@ -111,9 +111,17 @@
         </div>
 
         <div class="receipt-total">
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between mb-1">
                 <span>TOTAL</span>
                 <span id="receipt-total">Rp 0</span>
+            </div>
+            <div class="d-flex justify-content-between small text-muted mb-1">
+                <span>TUNAI</span>
+                <span id="receipt-cash">Rp 0</span>
+            </div>
+            <div class="d-flex justify-content-between small text-muted">
+                <span>KEMBALI</span>
+                <span id="receipt-change">Rp 0</span>
             </div>
         </div>
 
@@ -171,6 +179,8 @@
                 document.getElementById('receipt-id').textContent = '#' + transactionId.substring(0, 8).toUpperCase();
                 document.getElementById('receipt-date').textContent = formatDate(transData.date);
                 document.getElementById('receipt-total').textContent = formatRupiah(transData.total_price);
+                document.getElementById('receipt-cash').textContent = formatRupiah(transData.cash_received || 0);
+                document.getElementById('receipt-change').textContent = formatRupiah(transData.change || 0);
 
                 const itemsSnapshot = await db.collection('transaction_items')
                     .where('transaction_id', '==', transactionId).get();
@@ -195,7 +205,9 @@
                 });
 
                 shareMessage += `--------------------------\n`;
-                shareMessage += `*TOTAL: ${formatRupiah(transData.total_price)}*\n\n`;
+                shareMessage += `*TOTAL: ${formatRupiah(transData.total_price)}*\n`;
+                shareMessage += `Tunai: ${formatRupiah(transData.cash_received || 0)}\n`;
+                shareMessage += `Kembali: ${formatRupiah(transData.change || 0)}\n\n`;
                 shareMessage += `Terima kasih!`;
 
                 document.getElementById('btn-share-wa').onclick = () => {

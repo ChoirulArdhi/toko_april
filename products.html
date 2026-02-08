@@ -146,20 +146,46 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-muted">LINK GAMBAR PRODUK (OPTIONAL)</label>
-                            <div id="image-preview-container" class="mb-2 d-none">
-                                <div class="position-relative d-inline-block">
-                                    <img id="image-preview" src="" class="img-thumbnail" style="max-height: 150px;">
+                            <label class="form-label fw-bold small text-muted">GAMBAR PRODUK</label>
+
+                            <!-- Preview Container -->
+                            <div id="image-preview-container" class="mb-3 d-none">
+                                <div class="position-relative d-inline-block shadow-sm rounded overflow-hidden"
+                                    style="border: 2px solid #eee;">
+                                    <img id="image-preview" src="" class="img-fluid"
+                                        style="max-height: 180px; display: block;">
                                     <button type="button"
-                                        class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle"
-                                        onclick="removeImage()">
+                                        class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 rounded-circle shadow"
+                                        onclick="removeImage()" title="Hapus Gambar">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
                             </div>
-                            <input type="text" class="form-control" id="product-image-url"
-                                placeholder="https://contoh-link-gambar.com/foto.jpg">
-                            <small class="text-muted mt-1 d-block">Kosongkan jika tidak ada foto.</small>
+
+                            <!-- Upload Options -->
+                            <div class="card bg-light border-0 p-3 mb-2" style="border-radius: 12px;">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold mb-2">Upload File (Gratis via ImgBB)</label>
+                                    <input type="file" class="form-control" id="product-image-file" accept="image/*">
+                                </div>
+                                <div class="mb-0">
+                                    <label class="form-label small fw-bold mb-2">Atau Gunakan Link URL</label>
+                                    <input type="text" class="form-control" id="product-image-url"
+                                        placeholder="https://contoh.com/gambar.jpg">
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div id="upload-progress-container" class="progress d-none mb-2"
+                                style="height: 8px; border-radius: 4px;">
+                                <div id="upload-progress-bar"
+                                    class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                                    role="progressbar" style="width: 0%"></div>
+                            </div>
+
+                            <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                <i class="fas fa-info-circle me-1"></i> Format: JPG, PNG, WEBP. Maks 10MB.
+                            </small>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">

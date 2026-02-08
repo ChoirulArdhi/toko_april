@@ -22,9 +22,11 @@ document.addEventListener('DOMContentLoaded', function () {
         filterAndRenderProducts(keyword);
     });
 
-    // File Upload Handler (Disabled)
-    // const fileInput = document.getElementById('product-image-file');
-    // Removed ImgBB listener
+    // File Upload Handler (ImgBB)
+    const fileInput = document.getElementById('product-image-file');
+    if (fileInput) {
+        fileInput.addEventListener('change', handleFileUpload);
+    }
 });
 
 // Update preview when manual URL is entered
@@ -147,25 +149,74 @@ function renderPagination(totalPages) {
 
     if (totalPages <= 1) return;
 
-    // Previous Button
-    const prevLi = document.createElement('li');
-    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-    prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)" ${currentPage === 1 ? '' : `onclick="changePage(${currentPage - 1})"`}><i class="fas fa-chevron-left"></i></a>`;
-    paginationEl.appendChild(prevLi);
+    const isMobile = window.innerWidth < 768;
 
-    // Page Numbers
-    for (let i = 1; i <= totalPages; i++) {
-        const li = document.createElement('li');
-        li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-        li.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>`;
-        paginationEl.appendChild(li);
+    if (isMobile) {
+        // Mobile View: Prev [ Page X of Y ] Next
+        paginationEl.innerHTML = `
+            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="javascript:void(0)" onclick="${currentPage === 1 ? '' : `changePage(${currentPage - 1})`}"><i class="fas fa-chevron-left"></i></a>
+            </li>
+            <li class="page-item disabled"><span class="page-link text-dark fw-bold">${currentPage} / ${totalPages}</span></li>
+            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                <a class="page-link" href="javascript:void(0)" onclick="${currentPage === totalPages ? '' : `changePage(${currentPage + 1})`}"><i class="fas fa-chevron-right"></i></a>
+            </li>
+        `;
+    } else {
+        // Desktop View: Sliding Window
+        const maxVisible = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+        if (endPage - startPage + 1 < maxVisible) {
+            startPage = Math.max(1, endPage - maxVisible + 1);
+        }
+
+        // Previous
+        const prevLi = document.createElement('li');
+        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+        prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="${currentPage === 1 ? '' : `changePage(${currentPage - 1})`}"><i class="fas fa-chevron-left"></i></a>`;
+        paginationEl.appendChild(prevLi);
+
+        if (startPage > 1) {
+            const firstLi = document.createElement('li');
+            firstLi.className = 'page-item';
+            firstLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(1)">1</a>`;
+            paginationEl.appendChild(firstLi);
+            if (startPage > 2) {
+                const dotLi = document.createElement('li');
+                dotLi.className = 'page-item disabled';
+                dotLi.innerHTML = `<span class="page-link">...</span>`;
+                paginationEl.appendChild(dotLi);
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            const li = document.createElement('li');
+            li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            li.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>`;
+            paginationEl.appendChild(li);
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                const dotLi = document.createElement('li');
+                dotLi.className = 'page-item disabled';
+                dotLi.innerHTML = `<span class="page-link">...</span>`;
+                paginationEl.appendChild(dotLi);
+            }
+            const lastLi = document.createElement('li');
+            lastLi.className = 'page-item';
+            lastLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="changePage(${totalPages})">${totalPages}</a>`;
+            paginationEl.appendChild(lastLi);
+        }
+
+        // Next
+        const nextLi = document.createElement('li');
+        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+        nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)" onclick="${currentPage === totalPages ? '' : `changePage(${currentPage + 1})`}"><i class="fas fa-chevron-right"></i></a>`;
+        paginationEl.appendChild(nextLi);
     }
-
-    // Next Button
-    const nextLi = document.createElement('li');
-    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-    nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)" ${currentPage === totalPages ? '' : `onclick="changePage(${currentPage + 1})"`}><i class="fas fa-chevron-right"></i></a>`;
-    paginationEl.appendChild(nextLi);
 }
 
 window.changePage = function (page) {
@@ -272,16 +323,96 @@ window.resetForm = function () {
     document.getElementById('productModalLabel').textContent = 'Tambah Produk';
 }
 
+async function handleFileUpload(e) {
+    const file = e.target.value ? e.target.files[0] : null;
+    if (!file) return;
+
+    // Validate type
+    if (!file.type.startsWith('image/')) {
+        showToast('File harus berupa gambar!', 'error');
+        e.target.value = '';
+        return;
+    }
+
+    const progressContainer = document.getElementById('upload-progress-container');
+    const progressBar = document.getElementById('upload-progress-bar');
+    const btnSave = document.getElementById('btn-save-product');
+
+    progressContainer.classList.remove('d-none');
+    progressBar.style.width = '0%';
+    btnSave.disabled = true;
+
+    try {
+        // ImgBB API Key (Free)
+        const IMGBB_API_KEY = '71f49646be1d5964860b0d367fdf866a';
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        // Update progress manually since fetch doesn't support upload progress out of the box
+        // Using XMLHttpRequest for progress tracking
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`);
+
+        xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+                const percent = (event.loaded / event.total) * 100;
+                progressBar.style.width = percent + '%';
+            }
+        };
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                const imageUrl = response.data.url;
+
+                document.getElementById('product-image-url').value = imageUrl;
+                showImagePreview(imageUrl);
+                showToast('Gambar berhasil diunggah');
+            } else {
+                throw new Error('Upload failed');
+            }
+            finishUpload();
+        };
+
+        xhr.onerror = function () {
+            throw new Error('Network error during upload');
+        };
+
+        xhr.send(formData);
+
+    } catch (error) {
+        console.error("Error uploading to ImgBB:", error);
+        showToast('Gagal mengunggah gambar. Silakan coba link URL.', 'error');
+        finishUpload();
+    }
+
+    function finishUpload() {
+        setTimeout(() => {
+            progressContainer.classList.add('d-none');
+            progressBar.style.width = '0%';
+            btnSave.disabled = false;
+        }, 1000);
+    }
+}
+
 window.showImagePreview = function (url) {
     const container = document.getElementById('image-preview-container');
     const img = document.getElementById('image-preview');
+    if (!container || !img) return;
+
     img.src = url;
     container.classList.remove('d-none');
 }
 
 window.removeImage = function () {
-    document.getElementById('product-image-url').value = '';
-    // document.getElementById('product-image-file').value = '';
-    document.getElementById('image-preview-container').classList.add('d-none');
-    document.getElementById('image-preview').src = '';
+    const urlInput = document.getElementById('product-image-url');
+    const fileInput = document.getElementById('product-image-file');
+    const container = document.getElementById('image-preview-container');
+    const img = document.getElementById('image-preview');
+
+    if (urlInput) urlInput.value = '';
+    if (fileInput) fileInput.value = '';
+    if (container) container.classList.add('d-none');
+    if (img) img.src = '';
 }
